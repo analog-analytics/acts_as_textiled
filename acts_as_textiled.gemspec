@@ -10,6 +10,9 @@ Gem::Specification.new do |s|
   s.authors           = [ "Chris Wanstrath" ]
   s.has_rdoc          = false
 
+  s.add_dependency("RedCloth", "~> 4.0.0")
+  s.add_dependency("ActiveSupport", "~> 3.2.0")
+
   s.files             = %w( README.rdoc Rakefile )
   s.files            += Dir.glob("lib/**/*")
   s.files            += Dir.glob("bin/**/*")

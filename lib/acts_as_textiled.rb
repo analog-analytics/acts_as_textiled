@@ -1,8 +1,11 @@
+require "active_support/core_ext"
+
 module Err 
   module Acts #:nodoc: all
     module Textiled
-      def self.included(klass)
-        klass.extend ClassMethods
+      def self.included(base)
+        base.extend ClassMethods
+        base.class_attribute :textiled_attributes
       end
 
       module ClassMethods
@@ -15,10 +18,10 @@ module Err
 
           type_options = %w( plain source )
 
-          textiled_attributes = read_inheritable_attribute(:textiled_attributes) || []
+          self.textiled_attributes ||= []
 
           attributes.each do |attribute|
-            next if textiled_attributes.include? attribute
+            next if self.textiled_attributes.include? attribute
 
             unless method_defined?(attribute)
               define_method(attribute) do |*args|
@@ -47,16 +50,14 @@ module Err
             define_method("#{attribute}_plain",  proc { strip_redcloth_html(__send__(attribute)) if __send__(attribute) } )
             define_method("#{attribute}_source", proc { __send__("#{attribute}_before_type_cast") } )
 
-            textiled_attributes << attribute
+            self.textiled_attributes << attribute
           end
-
-          write_inheritable_attribute(:textiled_attributes, textiled_attributes)
 
           include Err::Acts::Textiled::InstanceMethods
         end
 
         def textiled_attributes
-          Array(read_inheritable_attribute(:textiled_attributes)) 
+          Array(self.textiled_attributes)
         end
       end
 
