@@ -122,3 +122,7 @@ module Err
     end
   end
 end
+
+if defined? ActiveRecord
+  ActiveRecord::Base.send(:include, Err::Acts::Textiled)
+end
